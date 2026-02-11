@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<!-- saved from url=(0042)file:///C:/Users/ali/Desktop/html/ali.html -->
+<html lang="ar" dir="rtl"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>تطبيق المندوب</title>
+    
+    <link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/512/2830/2830312.png">
+    <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/2830/2830312.png">
+    
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#1976D2">
+
+    <style>
+        :root { --bg: #f0f2f5; --card: #ffffff; --text: #333; --primary: #1976D2; --whatsapp: #25D366; --danger: #d32f2f; }
+        body.dark-mode { --bg: #121212; --card: #1e1e1e; --text: #e0e0e0; --primary: #90caf9; }
+        body { font-family: 'Segoe UI', sans-serif; background-color: var(--bg); color: var(--text); transition: 0.3s; padding: 10px; margin: 0; -webkit-tap-highlight-color: transparent; }
+        .container { max-width: 600px; margin: auto; }
+        
+        /* لوحة البيانات */
+        .dashboard { background: var(--primary); color: white; padding: 15px; border-radius: 12px; margin-bottom: 15px; display: flex; justify-content: space-around; text-align: center; box-shadow: 0 4px 12px rgba(25, 118, 210, 0.3); }
+        .dashboard b { display: block; font-size: 22px; }
+        
+        .search-box { width: 100%; padding: 14px; border-radius: 10px; border: 1px solid #ccc; margin-bottom: 15px; box-sizing: border-box; font-size: 16px; outline: none; box-shadow: inset 0 2px 4px rgba(0,0,0,0.05); }
+        
+        .card { background: var(--card); padding: 14px; border-radius: 15px; margin-bottom: 12px; box-shadow: 0 3px 10px rgba(0,0,0,0.08); display: flex; justify-content: space-between; align-items: center; border-right: 6px solid var(--primary); }
+        
+        .note-container { cursor: pointer; margin-top: 6px; width: 100%; }
+        .note-text { font-size: 13px; color: #d32f2f; background: #fff1f0; padding: 5px 10px; border-radius: 6px; display: inline-block; border: 1px dashed #ffa39e; }
+        .no-note { font-size: 12px; color: #999; text-decoration: underline; font-style: italic; }
+        
+        body.dark-mode .note-text { background: #2c1614; color: #ffbbad; border-color: #5c251f; }
+
+        .btn { border: none; padding: 10px; border-radius: 10px; cursor: pointer; font-weight: bold; transition: 0.2s; font-family: inherit; }
+        .action-btns { display: flex; gap: 10px; }
+        .btn-call, .btn-whatsapp { color: white; text-decoration: none; width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 22px; }
+        .btn-call { background: #4CAF50; box-shadow: 0 4px 10px rgba(76, 175, 80, 0.3); }
+        .btn-whatsapp { background: var(--whatsapp); box-shadow: 0 4px 10px rgba(37, 211, 102, 0.3); }
+        .btn-done { background: var(--danger); color: white; padding: 10px 18px; box-shadow: 0 4px 10px rgba(211, 47, 47, 0.3); }
+        
+        .btn-admin { background: #546e7a; color: white; width: 100%; margin-bottom: 12px; padding: 12px; font-size: 15px; }
+        
+        #adminSection { display: none; background: var(--card); padding: 20px; border-radius: 15px; border: 2px dashed var(--primary); margin-top: 10px; animation: fadeIn 0.3s; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        input, select, textarea { width: 100%; padding: 12px; margin-bottom: 12px; border-radius: 8px; border: 1px solid #ddd; font-size: 16px; box-sizing: border-box; background: var(--card); color: var(--text); }
+    </style>
+</head>
+<body id="body">
+
+<div class="container">
+    <button class="btn btn-admin" onclick="toggleDarkMode()">🌓 تبديل المظهر (ليلي / نهاري)</button>
+
+    <div class="dashboard">
+        <div><small>بانتظارك</small><b id="remainingCount">2</b></div>
+        <div><small>نسبة الإنجاز</small><b id="progressPercent">33%</b></div>
+    </div>
+
+    <input type="text" id="search" class="search-box" placeholder="🔍 ابحث عن اسم، منطقة، أو ملاحظة..." onkeyup="render()">
+    <div id="ordersList">
+                <div class="card">
+                    <div style="flex:1; padding-left: 10px;">
+                        <span style="font-size:11px; color:var(--primary); font-weight:bold; letter-spacing:1px;">#المسار 2</span>
+                        <div style="font-weight:bold; font-size:18px; margin: 4px 0;">علي</div>
+                        <div style="font-size:14px; color:gray; display:flex; align-items:center; gap:5px;">📍 نهر حسن</div>
+                        <div class="note-container" onclick="editNote(1770836692962)">
+                            <div class="note-text">📝 بال5 متواجد</div>
+                        </div>
+                    </div>
+                    <div class="action-btns">
+                        <a href="https://wa.me/9647716204348?text=%D8%A7%D9%84%D8%B3%D9%84%D8%A7%D9%85%20%D8%B9%D9%84%D9%8A%D9%83%D9%85%20%D8%B9%D9%84%D9%8A%D8%8C%20%D9%85%D8%B9%D9%83%20%D9%85%D9%86%D8%AF%D9%88%D8%A8%20%D8%A7%D9%84%D8%AA%D9%88%D8%B5%D9%8A%D9%84.%20%D8%A3%D9%86%D8%A7%20%D9%81%D9%8A%20%D8%A7%D9%84%D8%B7%D8%B1%D9%8A%D9%82%20%D8%A5%D9%84%D9%8A%D9%83." class="btn btn-whatsapp" title="واتساب">💬</a>
+                        <a href="tel:07716204348" class="btn btn-call" title="اتصال">📞</a>
+                        <button class="btn btn-done" onclick="markDone(1770836692962, &#39;علي&#39;)">تم</button>
+                    </div>
+                </div>
+                <div class="card">
+                    <div style="flex:1; padding-left: 10px;">
+                        <span style="font-size:11px; color:var(--primary); font-weight:bold; letter-spacing:1px;">#المسار 2</span>
+                        <div style="font-weight:bold; font-size:18px; margin: 4px 0;">جاسم</div>
+                        <div style="font-size:14px; color:gray; display:flex; align-items:center; gap:5px;">📍 نهر حسن</div>
+                        <div class="note-container" onclick="editNote(1770838186985)">
+                            <span class="no-note">+ إضافة ملاحظة</span>
+                        </div>
+                    </div>
+                    <div class="action-btns">
+                        <a href="https://wa.me/964?text=%D8%A7%D9%84%D8%B3%D9%84%D8%A7%D9%85%20%D8%B9%D9%84%D9%8A%D9%83%D9%85%20%D8%AC%D8%A7%D8%B3%D9%85%D8%8C%20%D9%85%D8%B9%D9%83%20%D9%85%D9%86%D8%AF%D9%88%D8%A8%20%D8%A7%D9%84%D8%AA%D9%88%D8%B5%D9%8A%D9%84.%20%D8%A3%D9%86%D8%A7%20%D9%81%D9%8A%20%D8%A7%D9%84%D8%B7%D8%B1%D9%8A%D9%82%20%D8%A5%D9%84%D9%8A%D9%83." class="btn btn-whatsapp" title="واتساب">💬</a>
+                        <a href="tel:0" class="btn btn-call" title="اتصال">📞</a>
+                        <button class="btn btn-done" onclick="markDone(1770838186985, &#39;جاسم&#39;)">تم</button>
+                    </div>
+                </div></div>
+
+    <button class="btn btn-admin" style="background:var(--primary)" onclick="toggleAdmin()">⚙️ الإدارة (إضافة طلب / مناطق)</button>
+
+    <div id="adminSection">
+        <h3 style="margin-top:0">إضافة زبون جديد</h3>
+        <input type="text" id="cName" placeholder="اسم الزبون الكامل">
+        <input type="tel" id="cPhone" placeholder="رقم الهاتف">
+        <select id="areaSelect"><option value="">اختر المنطقة</option><option value="كردلان">كردلان</option><option value="نهر حسن">نهر حسن</option></select>
+        <textarea id="cNote" placeholder="ملاحظات (رقم الطابق، لون الباب، إلخ...)" rows="2"></textarea>
+        <button class="btn" style="background:var(--primary); color:white; width:100%" onclick="addOrder()">حفظ الطلب في القائمة</button>
+        <hr style="margin:20px 0; border:0; border-top:1px solid #eee">
+        <h3>إعداد المناطق</h3>
+        <div id="currentAreas" style="font-size: 12px; margin-bottom: 12px; color: var(--primary); font-weight: bold;"></div>
+        <input type="text" id="areaTitle" placeholder="اسم المنطقة">
+        <input type="number" id="areaCode" placeholder="رقم المسار (1، 2، 3...)">
+        <button class="btn" style="background:#78909c; color:white; width:100%" onclick="addArea()">حفظ المنطقة كخيار دائم</button>
+    </div>
+</div>
+
+<script>
+    let areas = JSON.parse(localStorage.getItem('delivery_areas')) || {};
+    let orders = JSON.parse(localStorage.getItem('delivery_orders')) || [];
+
+    function speak(text) {
+        window.speechSynthesis.cancel();
+        let msg = new SpeechSynthesisUtterance(text);
+        msg.lang = 'ar-SA';
+        msg.rate = 0.9;
+        window.speechSynthesis.speak(msg);
+    }
+
+    function toggleDarkMode() { document.getElementById('body').classList.toggle('dark-mode'); }
+    function toggleAdmin() {
+        let s = document.getElementById('adminSection');
+        s.style.display = s.style.display === 'none' ? 'block' : 'none';
+        displayCurrentAreas();
+    }
+
+    function addArea() {
+        let name = document.getElementById('areaTitle').value.trim();
+        let code = document.getElementById('areaCode').value;
+        if(name && code) {
+            areas[name] = parseInt(code);
+            localStorage.setItem('delivery_areas', JSON.stringify(areas));
+            updateSelect();
+            displayCurrentAreas();
+            document.getElementById('areaTitle').value = '';
+            document.getElementById('areaCode').value = '';
+        }
+    }
+
+    function displayCurrentAreas() {
+        let keys = Object.keys(areas);
+        document.getElementById('currentAreas').innerHTML = keys.length > 0 ? "المناطق المضافة: " + keys.join(" | ") : "لا توجد مناطق حالياً.";
+    }
+
+    function updateSelect() {
+        let s = document.getElementById('areaSelect');
+        s.innerHTML = '<option value="">اختر المنطقة</option>';
+        for(let a in areas) s.innerHTML += `<option value="${a}">${a}</option>`;
+    }
+
+    function addOrder() {
+        let n = document.getElementById('cName').value.trim();
+        let p = document.getElementById('cPhone').value.trim();
+        let a = document.getElementById('areaSelect').value;
+        let note = document.getElementById('cNote').value.trim();
+        if(n && a && p) {
+            orders.push({id: Date.now(), name: n, phone: p, area: a, note: note, code: areas[a]});
+            localStorage.setItem('delivery_orders', JSON.stringify(orders));
+            render();
+            toggleAdmin();
+            document.getElementById('cName').value = '';
+            document.getElementById('cPhone').value = '';
+            document.getElementById('cNote').value = '';
+        } else {
+            alert("يرجى ملء الاسم والهاتف واختيار المنطقة");
+        }
+    }
+
+    function editNote(id) {
+        let order = orders.find(o => o.id === id);
+        let newNote = prompt("تعديل ملاحظة " + order.name + ":", order.note || "");
+        if (newNote !== null) {
+            order.note = newNote.trim();
+            localStorage.setItem('delivery_orders', JSON.stringify(orders));
+            render();
+        }
+    }
+
+    function markDone(id, name) {
+        let sorted = orders.slice().sort((a, b) => a.code - b.code);
+        let idx = sorted.findIndex(o => o.id === id);
+        let next = sorted[idx + 1];
+        orders = orders.filter(o => o.id !== id);
+        localStorage.setItem('delivery_orders', JSON.stringify(orders));
+        render();
+        let msg = "تم التوصيل لـ " + name + ". ";
+        if (next) msg += "الزبون التالي هو " + next.name + " في منطقة " + next.area;
+        speak(msg);
+    }
+
+    function render() {
+        let list = document.getElementById('ordersList');
+        let search = document.getElementById('search').value.toLowerCase();
+        list.innerHTML = '';
+        
+        let filtered = orders.filter(o => 
+            o.name.toLowerCase().includes(search) || 
+            o.area.toLowerCase().includes(search) ||
+            (o.note && o.note.toLowerCase().includes(search))
+        );
+        
+        filtered.sort((a,b) => a.code - b.code);
+
+        filtered.forEach(o => {
+            let waPhone = o.phone.startsWith('0') ? '964' + o.phone.substring(1) : o.phone; 
+            let waMsg = encodeURIComponent("السلام عليكم " + o.name + "، معك مندوب التوصيل. أنا في الطريق إليك.");
+
+            list.innerHTML += `
+                <div class="card">
+                    <div style="flex:1; padding-left: 10px;">
+                        <span style="font-size:11px; color:var(--primary); font-weight:bold; letter-spacing:1px;">#المسار ${o.code}</span>
+                        <div style="font-weight:bold; font-size:18px; margin: 4px 0;">${o.name}</div>
+                        <div style="font-size:14px; color:gray; display:flex; align-items:center; gap:5px;">📍 ${o.area}</div>
+                        <div class="note-container" onclick="editNote(${o.id})">
+                            ${o.note ? `<div class="note-text">📝 ${o.note}</div>` : '<span class="no-note">+ إضافة ملاحظة</span>'}
+                        </div>
+                    </div>
+                    <div class="action-btns">
+                        <a href="https://wa.me/${waPhone}?text=${waMsg}" class="btn btn-whatsapp" title="واتساب">💬</a>
+                        <a href="tel:${o.phone}" class="btn btn-call" title="اتصال">📞</a>
+                        <button class="btn btn-done" onclick="markDone(${o.id}, '${o.name}')">تم</button>
+                    </div>
+                </div>`;
+        });
+
+        document.getElementById('remainingCount').innerText = orders.length;
+        let total = JSON.parse(localStorage.getItem('orders_total')) || orders.length;
+        if(orders.length > total) { total = orders.length; localStorage.setItem('orders_total', total); }
+        let percent = total > 0 ? Math.round(((total - orders.length) / total) * 100) : 0;
+        document.getElementById('progressPercent').innerText = percent + "%";
+    }
+
+    updateSelect();
+    render();
+</script>
+
+</body></html>
